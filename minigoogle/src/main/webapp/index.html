@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MiniGoogle</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        img {
+            height: 85px;
+            width: 108px;
+            margin-right:20px;
+        }
+
+        .record {
+            margin: 10px 20px 20px;
+        }
+
+        .link {
+            color: #202124;
+            font-size: 12px;
+            margin-bottom: 1px;
+
+        }
+
+        .title {
+            color: #660099;
+            font-size: 14px;
+        }
+
+        .description {
+            color: #4D5156;
+            font-size: 13px;
+        }
+
+
+    </style>
+    <script>
+        function foo() {
+            console.log(document.getElementById("search_txt").value);
+
+            // ajax request to server
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    display(this.responseText);
+                }
+            };
+            xhttp.open("GET", "/minigoogle-1.0-SNAPSHOT/hello-servlet?keyword=" + document.getElementById("search_txt").value, true);
+            // let array = [];
+            // let json = xhttp.responseText;
+            // console.log(json);
+            // for (let key in json) {
+            //     if (json.hasOwnProperty(key)) {
+            //         let item = json[key];
+            //         array.push({
+            //             url: item[0],
+            //             title: item[1],
+            //             description: item[2]
+            //         });
+            //     }
+            // }
+            // for(var i in array){
+            //     conosle.log("row "+i);
+            //     for(var j in array[i]){
+            //         console.log(" " +array[i][j]);
+            //     }
+            // }
+            xhttp.send();
+        }
+
+        function display(data) {
+            $("#results").empty();
+            let results = jQuery.parseJSON(data);
+            console.log(results);
+            for (let i = 0; i < results.length; i++) {
+                let url = results[i][0];
+                let displayLink = url.substring(0, Math.min(60, url.length)) + "...";
+                let link = "<div class='link'>" + displayLink + "</div>";
+                let title = "<a class='title' target='blank' href='" + url + "'>" + results[i][1] + "</a>";
+                let description = "<div class='description'>" + results[i][2] + "</div>";
+                let newDiv = "<div class='record'>" + link + title + description + "</div>";
+                $('#results').append(newDiv);
+            }
+        }
+    </script>
+</head>
+<body>
+<div>
+    <img src="images/Snipaste_2021-01-08_14-08-14.png"/>
+    <input type="text" id="search_txt">
+    <input type="button" id="click_button" onclick="foo()" value="Search">
+</div>
+<div id="results">
+
+</div>
+</body>
+
+</html>
